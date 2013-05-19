@@ -34,8 +34,10 @@ func get_sd(w http.ResponseWriter, r *http.Request, tmpl template.Template) {
 	}
 	f.InitShudu(sltos(buf))
 
-	if !f.Answer() {
-		fmt.Println(time.Now().String() + "  无解")
+	if f.CheckSd() {
+		if !f.Answer() {
+			fmt.Println(time.Now().String() + "  无解")
+		}
 	}
 	tmpl.Execute(w, f.WriteList())
 	fmt.Println(time.Now().String() + "  解答")
