@@ -58,6 +58,73 @@ func (form *Form) WriteList() FList {
 	return fl
 }
 
+//验证数独题是否正确
+func CheckError(line [9]uint8) bool {
+	state := [9]bool{}
+	for _, v := range line {
+		if v != 0 {
+			state[v-1] = !state[v-1]
+		}
+	}
+	for i, v := range state {
+		if line[i] != 0 && v == false {
+			return false
+		}
+	}
+	return true
+}
+
+//验证数独题是否正确
+func (form *Form) CheckSd() bool {
+	row := [9]uint8{}
+	//横向检查
+	for _, vform := range form {
+		for j, v := range vform {
+			row[j] = v.Figure
+		}
+		if !CheckError(row) {
+			return false
+		}
+		row = [9]uint8{}
+	}
+	//竖向检查
+	n := 0
+	for i := 0; i < 9; i++ {
+		for _, vform := range form {
+			for j, v := range vform {
+				if j == i {
+					row[n] = v.Figure
+					n++
+				}
+			}
+		}
+		if !CheckError(row) {
+			return false
+		}
+		row = [9]uint8{}
+		n = 0
+	}
+	//块检查
+	for i := 0; i < 9; i += 3 {
+		for j := 0; j < 9; j += 3 {
+			nx := getx(i)
+			ny := gety(j)
+			for _, vx := range nx {
+				for _, vy := range ny {
+					row[n] = form[vx][vy].Figure
+					n++
+				}
+			}
+			if !CheckError(row) {
+				return false
+			}
+			row = [9]uint8{}
+			n = 0
+		}
+	}
+	return true
+}
+
 //验证是否数独是否成立
 func (form *Form) CheckAll() bool {
 	row := [9]uint8{}
