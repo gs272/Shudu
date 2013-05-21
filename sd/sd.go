@@ -46,8 +46,11 @@ func (form *Form) InitShudu(buf string) {
 		}
 	}
 }
-func (form *Form) WriteList() FList {
+func (form *Form) WriteList(or bool) FList {
 	var fl FList
+	if !or {
+		return fl
+	}
 	i := 0
 	for _, vf := range *form {
 		for _, v := range vf {
@@ -60,14 +63,14 @@ func (form *Form) WriteList() FList {
 
 //验证数独题是否正确
 func CheckError(line [9]uint8) bool {
-	state := [9]bool{}
+	state := [9]int{}
 	for _, v := range line {
 		if v != 0 {
-			state[v-1] = !state[v-1]
+			state[v-1]++
 		}
 	}
-	for i, v := range state {
-		if line[i] != 0 && v == false {
+	for _, v := range state {
+		if v == 2 {
 			return false
 		}
 	}
