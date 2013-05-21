@@ -21,7 +21,7 @@ func main() {
 }
 
 func get_index(w http.ResponseWriter, r *http.Request, tmpl template.Template) {
-	tmpl.Execute(w, f.WriteList())
+	tmpl.Execute(w, f.WriteList(false))
 	fmt.Println(time.Now().String() + "  初始")
 }
 
@@ -32,14 +32,17 @@ func get_sd(w http.ResponseWriter, r *http.Request, tmpl template.Template) {
 		figure, _ := strconv.Atoi(r.FormValue("Box" + strconv.Itoa(i)))
 		buf[i] = uint8(figure)
 	}
+	fmt.Println(buf)
 	f.InitShudu(sltos(buf))
-
 	if f.CheckSd() {
 		if !f.Answer() {
 			fmt.Println(time.Now().String() + "  无解")
 		}
+	} else {
+		fmt.Println(time.Now().String() + "数独题错误")
 	}
-	tmpl.Execute(w, f.WriteList())
+	fmt.Println(f.WriteList(true))
+	tmpl.Execute(w, f.WriteList(true))
 	fmt.Println(time.Now().String() + "  解答")
 }
 
